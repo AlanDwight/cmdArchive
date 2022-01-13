@@ -1917,4 +1917,4 @@ kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://t
 kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://team.thm:6443  -n kube-system get secret flag3 -o json
 
 ------------------
-
+hello
