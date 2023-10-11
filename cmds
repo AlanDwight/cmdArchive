@@ -1983,3 +1983,25 @@ docker run --rm -it --network=host aler9/rtsp-simple-server
 generating hmac with key by using openssl from shell | key = "3RfDFz82"
 
 cat order.txt | openssl dgst -sha256 -hmac ""
+
+#setting up virtual env 
+
+virtualenv --system-site-packages -p python ./venv
+or
+virtualenv some_dir
+
+source some_dir/bin/activate
+
+#force delete
+rm -rf (dir) 
+
+pip list
+pip install (package)
+
+pip freeze --local > requirements.txt
+
+deactivate
+
+virtualenv -p /usr/bin/python2.7 (dir) #creating new env with specific python version
+
+pip install -r requirements.txt
