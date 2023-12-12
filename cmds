@@ -2050,4 +2050,36 @@ Find-InterestingDomainAcl -ResolveGuids | Where-Object { $_.IdentityReferenceNam
 evil-winrm -i 10.10.57.198 -u vansprinkles -H 03E805D8A8C5AA435FB48832DAD620E3
 
 ----------------------------------------------------
+#tar_extraction 
 
+tar -xvzf filename.tar.gz
+
+sudo -l
+
+sudo deluser tracy sudo
+
+sudo -l -U tracy  # checking if tracy in sudo group
+
+/etc/ssh/sshd_config
+
+PasswordAuthentication no
+
+#Include /etc/ssh/sshd_config.d/*.conf
+
+sudo systemctl restart ssh
+
+cd /var/lib/jenkins/
+
+config.xml and config.xml.bak.
+
+Remove the "!--" and "--" for both authorizationStrategy and securityRealm, 
+
+cp config.xml.bak config.xml
+
+sudo systemctl restart jenkins
+
+egrep '^PasswordAuthentication|^#Include' /etc/ssh/sshd_config
+
+egrep 'denyAnonymousReadAccess|disableSignup|enableCaptcha' -C1 /var/lib/jenkins/config.xml
+
+----------------------------------------------------
