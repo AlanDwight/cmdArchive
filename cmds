@@ -1992,7 +1992,7 @@ virtualenv some_dir
 
 source some_dir/bin/activate
 
-#force delete
+#force delete #remove directory
 rm -rf (dir) 
 
 pip list
@@ -2083,3 +2083,13 @@ egrep '^PasswordAuthentication|^#Include' /etc/ssh/sshd_config
 egrep 'denyAnonymousReadAccess|disableSignup|enableCaptcha' -C1 /var/lib/jenkins/config.xml
 
 ----------------------------------------------------
+
+ftp server starting 
+
+pip3 install pyftpdlib
+
+python3 -m pyftpdlib
+
+cat ip.text| grep "64 bytes" | cut -d " " -f 4 | tr -d ":"
+
+for ip in $(cat iplist.txt);do sudo nmap -sS -p 80 -T4 $ip & done 
